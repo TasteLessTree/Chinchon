@@ -117,4 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="instructions.Text" xml:space="preserve">
+    <value>El objetivo de cada ronda es combinar (casar) tus cartas en escaleras del MISMO PALO
+o en grupos de 3 o más cartas del MISMO NÚMERO antes que tus competidores.
+El objetivo es ser el único jugador que no supere el límite de 130 puntos.</value>
+  </data>
+  <data name="rules.Text" xml:space="preserve">
+    <value>1. Se sortea el jugador que empieza, y en la siguiente ronda (si la hay),
+empieza el jugador de la derecha.
+2. Se reparten 7 cartas por jugador.
+3. Dejamos levantada en medio la carta siguiente (pila).
+4. El resto de cartas quedará en un taco boca abajo (mazo).
+5. En su turno, cada jugador debe coger una carta del mazo o pila,
+y descartar una de las suyas.
+6. Cada carta descartada debes dejarla boca arriba en la pila.
+7. La mano termina cuando un jugador logra casar sus siete (7) cartas
+o le queda sin casar una que tenga un valor igual o inferior a cinco (5).
+8. En ese momento se cuentan los puntos de cada jugador.
+9. Cada carta no casada vale lo que su índice
+(un dos vale dos puntos, un rey vale doce puntos).
+10. El jugador que cierre la mano y tenga las 7 cartas casadas,
+restará diez (10) de su puntuación.
+11. Cada jugador tiene que mostrar sus cartas.
+12. En su turno, cada jugador puede usar las cartas que hayan quedado
+sin casar e insertarlas en las de los competidores para cerrar sus propias jugadas,
+al no ser que se haya hecho menos diez (-10), ver regla 10.
+13. El chinchón se obtiene al tener una escala de siete cartas,
+el jugador automáticamente gana la partida.
+14. Si todos los jugadores superan el límite de puntos al mismo tiempo,
+gana el jugador con menos puntos.
+15. En caso de empate, gana el jugador que ha cerrado.</value>
+  </data>
 </root>
