@@ -6,6 +6,9 @@
 
         // Redimensionar el formulario al cargarlo
         private void Tutorial_Load(object sender, EventArgs e) {
+            // Posicionar en el centro de la pantalla
+            this.CenterToScreen();
+
             // Tamaño
             this.Size = new Size(860, 960);
 

@@ -48,6 +48,7 @@
             play.TabIndex = 1;
             play.Text = "Jugar";
             play.UseVisualStyleBackColor = true;
+            play.Click += Play_Click;
             // 
             // tutorial
             // 
@@ -58,7 +59,7 @@
             tutorial.TabIndex = 2;
             tutorial.Text = "Tutorial";
             tutorial.UseVisualStyleBackColor = true;
-            tutorial.Click += tutorial_Click;
+            tutorial.Click += Tutorial_Click;
             // 
             // exit
             // 
@@ -69,7 +70,7 @@
             exit.TabIndex = 3;
             exit.Text = "Salir";
             exit.UseVisualStyleBackColor = true;
-            exit.Click += this.exit_Click;
+            exit.Click += Exit_Click;
             // 
             // MainMenu
             // 
