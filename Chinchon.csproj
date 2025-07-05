@@ -10,7 +10,6 @@
 
 	<ItemGroup>
 		<Folder Include="assets\images\" />
-		<Folder Include="assets\audio\"/>
 	</ItemGroup>
 
 	<ItemGroup>

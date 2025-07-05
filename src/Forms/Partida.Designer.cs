@@ -28,23 +28,22 @@
             // 
             // flpManoJugador
             // 
+            flpManoJugador.AutoScroll = true;
             flpManoJugador.BackColor = SystemColors.Control;
             flpManoJugador.ForeColor = SystemColors.ControlText;
-            flpManoJugador.Location = new Point(12, 353);
-            flpManoJugador.Name = "flpManoJugador";
-            flpManoJugador.Size = new Size(1230, 276);
-            flpManoJugador.TabIndex = 0;
-            flpManoJugador.AutoScroll = true;
-            flpManoJugador.WrapContents = true;
-            flpManoJugador.FlowDirection = FlowDirection.LeftToRight;
-            flpManoJugador.Padding = new Padding(5);
+            flpManoJugador.Location = new Point(14, 414);
             flpManoJugador.Margin = new Padding(5);
+            flpManoJugador.Name = "flpManoJugador";
+            flpManoJugador.Padding = new Padding(5);
+            flpManoJugador.Size = new Size(1184, 233);
+            flpManoJugador.TabIndex = 0;
+            flpManoJugador.AllowDrop = true;
             // 
             // Partida
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1254, 641);
+            ClientSize = new Size(1214, 661);
             Controls.Add(flpManoJugador);
             Name = "Partida";
             Text = "Jugar";

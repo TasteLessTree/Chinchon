@@ -27,17 +27,14 @@ namespace Chinchon.src.Utils {
             this.mazo = baraja;
         }
 
-        // Barajear las cartas
+        // Barajear las cartas con el algoritmo de Fisher-Yates 
         public void Barajear() {
             // Reproducir un sonido de barajeo: https://pixabay.com/sound-effects/riffle-card-shuffle-104313/
             // Para dar más inmersión
-            string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "card-shuffle.wav");
+            string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "barajeo.wav");
 
             SoundPlayer soundPlayer = new SoundPlayer(rutaSonido);
             soundPlayer.Play();
-
-            // Arreglar esto
-            Thread.Sleep(4000);
 
             var random = new Random();
 
