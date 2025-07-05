@@ -10,10 +10,15 @@
 
 	<ItemGroup>
 		<Folder Include="assets\images\" />
+		<Folder Include="assets\audio\"/>
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="assets\images\*.jpg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		
+		<None Update="assets\audio\*.wav">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

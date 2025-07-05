@@ -1,4 +1,6 @@
-﻿namespace Chinchon.src.Utils {
+﻿using System.Media;
+
+namespace Chinchon.src.Utils {
     internal class Cartas {
         // Campos
         private List<string> mazo;
@@ -27,6 +29,16 @@
 
         // Barajear las cartas
         public void Barajear() {
+            // Reproducir un sonido de barajeo: https://pixabay.com/sound-effects/riffle-card-shuffle-104313/
+            // Para dar más inmersión
+            string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "card-shuffle.wav");
+
+            SoundPlayer soundPlayer = new SoundPlayer(rutaSonido);
+            soundPlayer.Play();
+
+            // Arreglar esto
+            Thread.Sleep(4000);
+
             var random = new Random();
 
             for (int i = 0; i < mazo.Count; i++) {
