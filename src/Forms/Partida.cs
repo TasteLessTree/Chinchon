@@ -87,6 +87,25 @@ namespace Chinchon.src.forms {
             }
         }
 
+        // Mostrar pila de descarte, donde se dejan las cartas y luego se cierra
+        private void MostrarPilaDescarte(string carta) {
+            flpPilaDescarte.Controls.Clear();
+
+            // Ruta a la imagen
+            string rutaImagen = Path.Combine(Application.StartupPath, "assets", "images", carta + ".jpg");
+
+            // Crear la imagen
+            PictureBox pictureBox = new PictureBox {
+                Width = 150,
+                Height = 230,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                Image = Image.FromFile(rutaImagen)
+            };
+
+            // Añadir la imagen
+            flpPilaDescarte.Controls.Add(pictureBox);
+        }
+
         private void Partida_Load(object sender, EventArgs e) {
             // Posicionar en el centro de la pantalla
             this.CenterToScreen();
@@ -105,6 +124,10 @@ namespace Chinchon.src.forms {
 
             // Mostramos la mano del jugador
             MostarManoJugador();
+
+            // Creamos la pila de descarte y la mostramos
+            string cartaPinta = mazo.CrearPilaDescarte();
+            MostrarPilaDescarte(cartaPinta);
         }
     }
 }

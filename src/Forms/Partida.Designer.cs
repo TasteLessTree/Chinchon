@@ -24,29 +24,41 @@
         /// </summary>
         private void InitializeComponent() {
             flpManoJugador = new FlowLayoutPanel();
+            flpPilaDescarte = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // flpManoJugador
             // 
+            flpManoJugador.AllowDrop = true;
             flpManoJugador.AutoScroll = true;
             flpManoJugador.BackColor = SystemColors.Control;
             flpManoJugador.ForeColor = SystemColors.ControlText;
-            flpManoJugador.Location = new Point(14, 414);
+            flpManoJugador.Location = new Point(14, 392);
             flpManoJugador.Margin = new Padding(5);
             flpManoJugador.Name = "flpManoJugador";
             flpManoJugador.Padding = new Padding(5);
-            flpManoJugador.Size = new Size(1184, 233);
+            flpManoJugador.Size = new Size(1184, 255);
             flpManoJugador.TabIndex = 0;
-            flpManoJugador.AllowDrop = true;
+            flpManoJugador.DragDrop += FlpManoJugador_DragDrop;
             flpManoJugador.DragEnter += FlpManoJugador_DragEnter;
             flpManoJugador.DragOver += FlpManoJugador_DragOver;
-            flpManoJugador.DragDrop += FlpManoJugador_DragDrop;
+            // 
+            // flpPilaDescarte
+            // 
+            flpPilaDescarte.AllowDrop = true;
+            flpPilaDescarte.AutoScroll = true;
+            flpPilaDescarte.Location = new Point(608, 123);
+            flpPilaDescarte.Name = "flpPilaDescarte";
+            flpPilaDescarte.Size = new Size(200, 250);
+            flpPilaDescarte.TabIndex = 1;
+            flpPilaDescarte.WrapContents = false;
             // 
             // Partida
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1214, 661);
+            Controls.Add(flpPilaDescarte);
             Controls.Add(flpManoJugador);
             Name = "Partida";
             Text = "Jugar";
@@ -57,5 +69,6 @@
         #endregion
 
         private FlowLayoutPanel flpManoJugador;
+        private FlowLayoutPanel flpPilaDescarte;
     }
 }

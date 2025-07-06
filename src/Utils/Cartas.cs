@@ -65,5 +65,12 @@ namespace Chinchon.src.Utils {
 
             return manos;
         }
+
+        // Crear la pila de descarte
+        public string CrearPilaDescarte() {
+            string carta = mazo[0];
+            mazo.RemoveAt(0);
+            return carta;
+        }
     }
 }
