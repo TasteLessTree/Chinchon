@@ -24,11 +24,8 @@ namespace Chinchon.src.forms {
                     Margin = new Padding(5)
                 };
 
-                // Habilitar drag and drop
+                // Habilitar Drag and Drop
                 pictureBox.MouseDown += PB_MouseDown;
-                pictureBox.DragEnter += PB_DragEnter;
-                pictureBox.DragOver += PB_DragOver;
-                pictureBox.DragDrop += PB_DragDrop;
 
                 // Abrir las imágenes
                 string rutaImagen = Path.Combine(Application.StartupPath, "assets", "images", carta + ".jpg");
@@ -54,53 +51,37 @@ namespace Chinchon.src.forms {
             }
         }
 
-        // Hacer click en una de las cartas
+        // Mouse Down
         private void PB_MouseDown(object? sender, MouseEventArgs e) {
             PictureBox? pb = sender as PictureBox;
-            
-            if (pb !=null)
-                flpManoJugador.DoDragDrop(pb, DragDropEffects.Move);
+            if (pb != null)
+                pb.DoDragDrop(pb, DragDropEffects.Move);
         }
 
-        // Empezar a arrastrar la carta
-        private void PB_DragEnter(object? sender, DragEventArgs e) {
+        // Entrar en la acción
+        private void FlpManoJugador_DragEnter(object sender, DragEventArgs e) {
             if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox)))
                 e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
         }
 
-        // Enseñar la posición en tiempo real
-        private void PB_DragOver(object? sender, DragEventArgs e) {
-            if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox)))
-                e.Effect = DragDropEffects.Move;
-
-            // Establecer índice en tiempo real mientras la carta es arrastrada
-            Point point = flpManoJugador.PointToClient(new Point(e.X, e.Y));
-            Control? hover = flpManoJugador.GetChildAtPoint(point);
-
-            if (hover != null && e.Data != null) {
-                PictureBox? arrastrada = e.Data.GetData(typeof(PictureBox)) as PictureBox;
-
-                int indice = flpManoJugador.Controls.GetChildIndex(hover, false);
-
-                if (arrastrada != null) {
-                    flpManoJugador.Controls.SetChildIndex(arrastrada, indice);
-                    flpManoJugador.Invalidate();
-                }
-            }
+        // La acción termina
+        private void FlpManoJugador_DragOver(object sender, DragEventArgs e) {
+            e.Effect = DragDropEffects.Move;
         }
 
-        // Comprueba al soltar y reposiciona definitivamente.
-        private void PB_DragDrop(object? sender, DragEventArgs e) {
-            if (e.Data != null) {
-                PictureBox? arrastrada = e.Data.GetData(typeof(PictureBox)) as PictureBox;
-
+        // Comprueba al soltar y reposiciona definitivamente
+        private void FlpManoJugador_DragDrop(object sender, DragEventArgs e) {
+            if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox))) {
+                PictureBox? pb = e.Data.GetData(typeof(PictureBox)) as PictureBox;
                 Point point = flpManoJugador.PointToClient(new Point(e.X, e.Y));
-                Control? objetivo = flpManoJugador.GetChildAtPoint(point);
+                Control? target = flpManoJugador.GetChildAtPoint(point);
 
-                if (objetivo != null && arrastrada != null) {
-                    int indice = flpManoJugador.Controls.GetChildIndex(objetivo, false);
+                int index = target == null ? flpManoJugador.Controls.Count - 1 : flpManoJugador.Controls.GetChildIndex(target, false);
 
-                    flpManoJugador.Controls.SetChildIndex(arrastrada, indice);
+                if (pb != null) {
+                    flpManoJugador.Controls.SetChildIndex(pb, index);
                     flpManoJugador.Invalidate();
                 }
             }

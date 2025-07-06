@@ -38,6 +38,9 @@
             flpManoJugador.Size = new Size(1184, 233);
             flpManoJugador.TabIndex = 0;
             flpManoJugador.AllowDrop = true;
+            flpManoJugador.DragEnter += FlpManoJugador_DragEnter;
+            flpManoJugador.DragOver += FlpManoJugador_DragOver;
+            flpManoJugador.DragDrop += FlpManoJugador_DragDrop;
             // 
             // Partida
             // 
