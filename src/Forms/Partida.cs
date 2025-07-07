@@ -10,6 +10,10 @@ namespace Chinchon.src.forms {
             InitializeComponent();
         }
 
+        // ============================
+        // MANO DEL JUGADOR
+        // ============================
+
         // Mostrar la mano del jugador
         private void MostarManoJugador() {
             // Limpiar controles
@@ -21,17 +25,15 @@ namespace Chinchon.src.forms {
                     Width = 150,
                     Height = 230,
                     SizeMode = PictureBoxSizeMode.StretchImage,
-                    Margin = new Padding(5)
+                    Margin = new Padding(5),
+                    Tag = carta
                 };
 
                 // Habilitar Drag and Drop
-                pictureBox.MouseDown += PB_MouseDown;
+                pictureBox.MouseDown += PB_MouseDown; // PB = Picture Box
 
                 // Abrir las imágenes
                 string rutaImagen = Path.Combine(Application.StartupPath, "assets", "images", carta + ".jpg");
-
-                // Ignorar la imágen de la carta dada la vuelta
-                if (carta == "REVERSO") continue;
 
                 pictureBox.Image = Image.FromFile(rutaImagen);
 
@@ -51,14 +53,14 @@ namespace Chinchon.src.forms {
             }
         }
 
-        // Mouse Down
+        // Mouse Down (flpManoJugador)
         private void PB_MouseDown(object? sender, MouseEventArgs e) {
-            PictureBox? pb = sender as PictureBox;
+            var pb = sender as PictureBox;
             if (pb != null)
                 pb.DoDragDrop(pb, DragDropEffects.Move);
         }
 
-        // Entrar en la acción
+        // Entrar en la acción (flpManoJugador)
         private void FlpManoJugador_DragEnter(object sender, DragEventArgs e) {
             if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox)))
                 e.Effect = DragDropEffects.Move;
@@ -66,26 +68,42 @@ namespace Chinchon.src.forms {
                 e.Effect = DragDropEffects.None;
         }
 
-        // La acción termina
+        // La acción termina (flpManoJugador)
         private void FlpManoJugador_DragOver(object sender, DragEventArgs e) {
             e.Effect = DragDropEffects.Move;
         }
 
-        // Comprueba al soltar y reposiciona definitivamente
+        // Comprobar al soltar y reposiciona definitivamente (flpManoJugador)
         private void FlpManoJugador_DragDrop(object sender, DragEventArgs e) {
             if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox))) {
-                PictureBox? pb = e.Data.GetData(typeof(PictureBox)) as PictureBox;
+                var pb = e.Data.GetData(typeof(PictureBox)) as PictureBox;
+                
+                // Si la carta es de la pila de descarte, actualizamos los controles
+                if (pb != null && pb.Parent != flpManoJugador) {
+                    flpPilaDescarte.Controls.Remove(pb);
+                    flpManoJugador.Controls.Add(pb);
+
+                    // Actualizar la mano del jugador internamente
+                    manoJugador.Add(pb.Tag.ToString());
+                }
+
+                // Calcular la posición de las cartas
                 Point point = flpManoJugador.PointToClient(new Point(e.X, e.Y));
                 Control? target = flpManoJugador.GetChildAtPoint(point);
 
-                int index = target == null ? flpManoJugador.Controls.Count - 1 : flpManoJugador.Controls.GetChildIndex(target, false);
+                int indice = (target == null)
+                    ? flpManoJugador.Controls.Count - 1
+                    : flpManoJugador.Controls.GetChildIndex(target, false);
 
-                if (pb != null) {
-                    flpManoJugador.Controls.SetChildIndex(pb, index);
-                    flpManoJugador.Invalidate();
-                }
+                // Reposicionar la imagen
+                flpManoJugador.Controls.SetChildIndex(pb, indice);
+                flpManoJugador.Invalidate();
             }
         }
+
+        // ============================
+        // PILA DE DESCARTE
+        // ============================
 
         // Mostrar pila de descarte, donde se dejan las cartas y luego se cierra
         private void MostrarPilaDescarte(string carta) {
@@ -99,11 +117,44 @@ namespace Chinchon.src.forms {
                 Width = 150,
                 Height = 230,
                 SizeMode = PictureBoxSizeMode.StretchImage,
-                Image = Image.FromFile(rutaImagen)
+                Image = Image.FromFile(rutaImagen),
+                Tag = carta
             };
+
+            pictureBox.MouseDown += PD_MouseDown; // Mouse Down en la Pila de Descarte
 
             // Añadir la imagen
             flpPilaDescarte.Controls.Add(pictureBox);
+        }
+
+        // Mouse Down en la pila de descarte
+        private void PD_MouseDown(object? sender, MouseEventArgs e) {
+            var pb = sender as PictureBox;
+            if (pb != null)
+                pb.DoDragDrop(pb, DragDropEffects.Move);
+        }
+
+        // Entrar en la acción (flpPilaDescarte)
+        private void FlpPilaDescarte_DragEnter(object sender, DragEventArgs e) {
+            if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox)))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        // Terminar la acción (flpPilaDescarte)
+        private void FlpPilaDescarte_DragDrop(object sender, DragEventArgs e) {
+            if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox))) {
+                var pb = e.Data.GetData(typeof(PictureBox)) as PictureBox;
+                flpManoJugador.Controls.Remove(pb);
+                flpPilaDescarte.Controls.Clear(); // Solo una carta en la pila
+                flpPilaDescarte.Controls.Add(pb);
+
+                // Actualiza la lista interna de la mano
+                string nombreCarta = pb.Tag.ToString();
+                manoJugador.Remove(nombreCarta);
+                // Agrega a la pila de descarte si tienes una lista para ello
+            }
         }
 
         private void Partida_Load(object sender, EventArgs e) {

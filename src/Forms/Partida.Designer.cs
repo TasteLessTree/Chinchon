@@ -47,11 +47,15 @@
             // 
             flpPilaDescarte.AllowDrop = true;
             flpPilaDescarte.AutoScroll = true;
+            flpPilaDescarte.BackgroundImage = Properties.Resources.DESCARTE;
+            flpPilaDescarte.BackgroundImageLayout = ImageLayout.Stretch;
             flpPilaDescarte.Location = new Point(608, 123);
             flpPilaDescarte.Name = "flpPilaDescarte";
             flpPilaDescarte.Size = new Size(200, 250);
             flpPilaDescarte.TabIndex = 1;
             flpPilaDescarte.WrapContents = false;
+            flpPilaDescarte.DragEnter += FlpPilaDescarte_DragEnter;
+            flpPilaDescarte.DragDrop += FlpPilaDescarte_DragDrop;
             // 
             // Partida
             // 
