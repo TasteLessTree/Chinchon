@@ -72,5 +72,16 @@ namespace Chinchon.src.Utils {
             mazo.RemoveAt(0);
             return carta;
         }
+
+        // Robamos una carta
+        public string RobarCarta() {
+            // Asegura que existan cartas en el mazo
+            if (mazo.Count == 0)
+                throw new InvalidOperationException("No quedan cartas en el mazo");
+
+            string carta = mazo[0];
+            mazo.RemoveAt(0);
+            return carta;
+        }
     }
 }

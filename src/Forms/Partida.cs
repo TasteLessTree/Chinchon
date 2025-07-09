@@ -6,13 +6,21 @@ namespace Chinchon.src.forms {
         private Cartas mazo;
         private List<string> manoJugador;
 
+        // Controlar el turno
+        private enum EstadoTurno {
+            EsperandoRobo,
+            EsperandoDescarte
+        }
+
+        private EstadoTurno estadoTurno = EstadoTurno.EsperandoRobo;
+
         public Partida() {
             InitializeComponent();
         }
 
-        // ============================
+        // ==========================================
         // MANO DEL JUGADOR
-        // ============================
+        // ==========================================
 
         // Mostrar la mano del jugador
         private void MostarManoJugador() {
@@ -77,7 +85,7 @@ namespace Chinchon.src.forms {
         private void FlpManoJugador_DragDrop(object sender, DragEventArgs e) {
             if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox))) {
                 var pb = e.Data.GetData(typeof(PictureBox)) as PictureBox;
-                
+
                 // Si la carta es de la pila de descarte, actualizamos los controles
                 if (pb != null && pb.Parent != flpManoJugador) {
                     flpPilaDescarte.Controls.Remove(pb);
@@ -101,9 +109,9 @@ namespace Chinchon.src.forms {
             }
         }
 
-        // ============================
+        // ==========================================
         // PILA DE DESCARTE
-        // ============================
+        // ==========================================
 
         // Mostrar pila de descarte, donde se dejan las cartas y luego se cierra
         private void MostrarPilaDescarte(string carta) {
@@ -129,12 +137,18 @@ namespace Chinchon.src.forms {
 
         // Mouse Down en la pila de descarte
         private void PD_MouseDown(object? sender, MouseEventArgs e) {
+            if (estadoTurno != EstadoTurno.EsperandoRobo) return;
+
             var pb = sender as PictureBox;
-            if (pb != null)
+            if (pb != null) {
                 pb.DoDragDrop(pb, DragDropEffects.Move);
+
+                CambiarEstadoTurno(EstadoTurno.EsperandoDescarte);
+            }
         }
 
         // Entrar en la acción (flpPilaDescarte)
+        // Permite drag si NO se ha robado una carta (ya sea del mazo o la propia pila)
         private void FlpPilaDescarte_DragEnter(object sender, DragEventArgs e) {
             if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox)))
                 e.Effect = DragDropEffects.Move;
@@ -144,8 +158,11 @@ namespace Chinchon.src.forms {
 
         // Terminar la acción (flpPilaDescarte)
         private void FlpPilaDescarte_DragDrop(object sender, DragEventArgs e) {
+            if (estadoTurno != EstadoTurno.EsperandoDescarte) return;
+
             if (e.Data != null && e.Data.GetDataPresent(typeof(PictureBox))) {
                 var pb = e.Data.GetData(typeof(PictureBox)) as PictureBox;
+
                 flpManoJugador.Controls.Remove(pb);
                 flpPilaDescarte.Controls.Clear(); // Solo una carta en la pila
                 flpPilaDescarte.Controls.Add(pb);
@@ -153,7 +170,58 @@ namespace Chinchon.src.forms {
                 // Actualiza la lista interna de la mano
                 string nombreCarta = pb.Tag.ToString();
                 manoJugador.Remove(nombreCarta);
-                // Agrega a la pila de descarte si tienes una lista para ello
+
+                CambiarEstadoTurno(EstadoTurno.EsperandoRobo);
+
+                MostarManoJugador();
+            }
+        }
+
+        // ==========================================
+        // MAZO PARA ROBAR
+        // ==========================================
+        private void MazoRobar_Click(object sender, EventArgs e) {
+            if (estadoTurno != EstadoTurno.EsperandoRobo) return;
+
+            try {
+                // Robar la carta y añadirla a la mano del jugador
+                string carta = mazo.RobarCarta();
+                manoJugador.Add(carta);
+
+                MostarManoJugador();
+
+                CambiarEstadoTurno(EstadoTurno.EsperandoDescarte);
+            } catch {
+                // No hay más cartas para robar
+                MessageBox.Show("¡NO HAY MÁS CARTAS EN EL MAZO!",
+                                "Atención",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+            }
+        }
+
+        // ==========================================
+        // MANEJO DEL ESTADO DEL TURNO
+        // ==========================================
+        private void CambiarEstadoTurno(EstadoTurno nuevoEstado) {
+            estadoTurno = nuevoEstado;
+
+            switch (estadoTurno) {
+                case EstadoTurno.EsperandoRobo:
+                    // Se puede robar
+                    mazoRobar.Enabled = true;
+                    flpPilaDescarte.AllowDrop = false;
+
+                    lblEstado.Text = "Roba una carta del mazo o la pila de descarte";
+                    break;
+
+                case EstadoTurno.EsperandoDescarte:
+                    // No puedes robar
+                    mazoRobar.Enabled = false;
+                    flpPilaDescarte.AllowDrop = true;
+
+                    lblEstado.Text = "Descarta una carta";
+                    break;
             }
         }
 
@@ -179,6 +247,11 @@ namespace Chinchon.src.forms {
             // Creamos la pila de descarte y la mostramos
             string cartaPinta = mazo.CrearPilaDescarte();
             MostrarPilaDescarte(cartaPinta);
+
+            // Colocar el mazo
+            string rutaReverso = Path.Combine(Application.StartupPath, "assets", "images", "REVERSO.jpg");
+            mazoRobar.Image = Image.FromFile(rutaReverso);
+            mazoRobar.SizeMode = PictureBoxSizeMode.StretchImage;
         }
     }
 }
