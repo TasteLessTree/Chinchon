@@ -1,4 +1,5 @@
-﻿using Chinchon.src.Utils;
+﻿using System.Linq.Expressions;
+using Chinchon.src.Utils;
 
 namespace Chinchon.src.forms {
     public partial class Partida : Form {
@@ -29,7 +30,7 @@ namespace Chinchon.src.forms {
 
             foreach (var carta in manoJugador) {
                 // Crear la imagen
-                PictureBox pictureBox = new PictureBox {
+                PictureBox pictureBox = new() {
                     Width = 150,
                     Height = 230,
                     SizeMode = PictureBoxSizeMode.StretchImage,
@@ -59,6 +60,9 @@ namespace Chinchon.src.forms {
                 // Añadir la imagen al FlowLayoutPanel
                 flpManoJugador.Controls.Add(pictureBox);
             }
+
+            // DEBUG
+            Console.WriteLine($"\t[{string.Join(", ", manoJugador)}]");
         }
 
         // Mouse Down (flpManoJugador)
@@ -121,7 +125,7 @@ namespace Chinchon.src.forms {
             string rutaImagen = Path.Combine(Application.StartupPath, "assets", "images", carta + ".jpg");
 
             // Crear la imagen
-            PictureBox pictureBox = new PictureBox {
+            PictureBox pictureBox = new() {
                 Width = 150,
                 Height = 230,
                 SizeMode = PictureBoxSizeMode.StretchImage,
@@ -191,7 +195,8 @@ namespace Chinchon.src.forms {
                 MostarManoJugador();
 
                 CambiarEstadoTurno(EstadoTurno.EsperandoDescarte);
-            } catch {
+            }
+            catch {
                 // No hay más cartas para robar
                 MessageBox.Show("¡NO HAY MÁS CARTAS EN EL MAZO!",
                                 "Atención",
@@ -225,7 +230,108 @@ namespace Chinchon.src.forms {
             }
         }
 
-        private void Partida_Load(object sender, EventArgs e) {
+        // ==========================================
+        // CERRAR, TERMINA EL JUEGO
+        // ==========================================
+        private void Cerrar_Click(object sender, EventArgs e) {
+            //
+        }
+
+        // Dada una mano, comprueba si la carta sin casar es <= 5, o si están todas las cartas casadas
+        public bool PuedeCerrar(List<string> mano) {
+            // Agrupa cartas por número y por palo
+            var numeros = mano.Select(c => int.Parse(c.Split(' ')[0])).ToList();
+            var palos = mano.Select(c => c.Split(' ')[1]).ToList();
+
+            // Comprobar si es escalera de 7 cartas del mismo palo (chinchón)
+            foreach (var palo in palos.Distinct()) {
+                var numerosDePalo = mano
+                    .Where(c => c.EndsWith(palo))
+                    .Select(c => int.Parse(c.Split(' ')[0]))
+                    .OrderBy(n => n)
+                    .ToList();
+
+                // ¡Chinchón!
+                if (numerosDePalo.Count == 7 && EsEscalera(numerosDePalo)) return true;
+            }
+
+            // Comprobar si es menos 10 (4 cartas casadas por un lado, 3 cartas casadas por el otro)
+            var grupos = ObtenerGrupos(mano);
+
+            if (grupos.Any(g => g.Count == 4) &&
+                grupos.Any(g => g.Count == 3) &&
+                grupos.Sum(g => g.Count) == 7) return true;
+
+            // Comprobar seis cartas casadas y una suelta <= 5
+            if (grupos.Sum(g => g.Count) == 6 && mano.Count == 7) {
+                var indicesAgrupados = grupos.SelectMany(g => g).ToList();
+                var cartaSuelta = mano.Where((c, i) => !indicesAgrupados.Contains(i)).FirstOrDefault();
+
+                if (cartaSuelta != null) {
+                    int valorSuelto = int.Parse(cartaSuelta.Split(' ')[0]);
+                    
+                    if (valorSuelto <= 5) return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Devuelve una lista de grupos de índices de cartas agrupadas (por número o escalera)
+        private List<List<int>> ObtenerGrupos(List<string> mano) {
+            var grupos = new List<List<int>>();
+
+            // Buscar tríos y cuartetos
+            var numeros = mano.Select(c => int.Parse(c.Split(' ')[0])).ToList();
+            for (int n = 1; n <= 12; n++) {
+                var indices = numeros
+                    .Select((num, idx) => num == n ? idx : -1)
+                    .Where(idx => idx != -1)
+                    .ToList();
+                if (indices.Count >= 3)
+                    grupos.Add(indices);
+            }
+
+            // Buscar escaleras por palo
+            var palos = mano.Select(c => c.Split(' ')[1]).Distinct();
+
+            foreach (var palo in palos) {
+                var cartasDePalo = mano
+                    .Select((c, idx) => new { c, idx })
+                    .Where(x => x.c.EndsWith(palo))
+                    .Select(x => new { Num = int.Parse(x.c.Split(' ')[0]), x.idx })
+                    .OrderBy(x => x.Num)
+                    .ToList();
+
+                for (int i = 0; i <= cartasDePalo.Count - 3; i++) {
+                    var escalera = new List<int> { cartasDePalo[i].idx };
+                    int actual = cartasDePalo[i].Num;
+
+                    for (int j = i + 1; j < cartasDePalo.Count; j++) {
+
+                        if (cartasDePalo[j].Num == actual + 1) {
+                            escalera.Add(cartasDePalo[j].idx);
+                            actual++;
+                        } else if (cartasDePalo[j].Num > actual + 1) break;
+                    }
+                    if (escalera.Count >= 3) grupos.Add(escalera);
+                }
+            }
+            return grupos;
+        }
+
+        // Comprobar si es una escalera de números consecutivos
+        private bool EsEscalera(List<int> numeros) {
+            numeros.Sort();
+
+            for (int i = 1; i < numeros.Count; i++) {
+                if (numeros[i] != numeros[i - 1] + 1) return false;
+            }
+            return true;
+        }
+
+        private void Partida_Load(object sender, EventArgs e)
+        {
             // Posicionar en el centro de la pantalla
             this.CenterToScreen();
 

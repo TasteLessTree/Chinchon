@@ -29,12 +29,16 @@ namespace Chinchon.src.forms {
             flpPilaDescarte = new FlowLayoutPanel();
             mazoRobar = new PictureBox();
             lblEstado = new Label();
+            centrarElementos = new TableLayoutPanel();
+            cerrar = new Button();
             ((System.ComponentModel.ISupportInitialize)mazoRobar).BeginInit();
+            centrarElementos.SuspendLayout();
             SuspendLayout();
             // 
             // flpManoJugador
             // 
             flpManoJugador.AllowDrop = true;
+            flpManoJugador.Anchor = AnchorStyles.Bottom;
             flpManoJugador.AutoScroll = true;
             flpManoJugador.BackColor = SystemColors.Control;
             flpManoJugador.ForeColor = SystemColors.ControlText;
@@ -47,7 +51,6 @@ namespace Chinchon.src.forms {
             flpManoJugador.DragDrop += FlpManoJugador_DragDrop;
             flpManoJugador.DragEnter += FlpManoJugador_DragEnter;
             flpManoJugador.DragOver += FlpManoJugador_DragOver;
-            flpManoJugador.Anchor = (AnchorStyles.Bottom);
             // 
             // flpPilaDescarte
             // 
@@ -55,11 +58,12 @@ namespace Chinchon.src.forms {
             flpPilaDescarte.AutoScroll = true;
             flpPilaDescarte.BackgroundImage = Properties.Resources.DESCARTE;
             flpPilaDescarte.BackgroundImageLayout = ImageLayout.Stretch;
-            flpPilaDescarte.Location = new Point(608, 123);
+            flpPilaDescarte.Dock = DockStyle.Fill;
+            flpPilaDescarte.Location = new Point(481, 5);
+            flpPilaDescarte.Margin = new Padding(5);
             flpPilaDescarte.Name = "flpPilaDescarte";
-            flpPilaDescarte.Size = new Size(200, 250);
+            flpPilaDescarte.Size = new Size(194, 294);
             flpPilaDescarte.TabIndex = 1;
-            flpPilaDescarte.WrapContents = false;
             flpPilaDescarte.DragDrop += FlpPilaDescarte_DragDrop;
             flpPilaDescarte.DragEnter += FlpPilaDescarte_DragEnter;
             // 
@@ -67,37 +71,71 @@ namespace Chinchon.src.forms {
             // 
             mazoRobar.BackgroundImage = Properties.Resources.MAZO;
             mazoRobar.BackgroundImageLayout = ImageLayout.Stretch;
-            mazoRobar.Location = new Point(344, 123);
+            mazoRobar.Dock = DockStyle.Fill;
+            mazoRobar.Location = new Point(277, 5);
+            mazoRobar.Margin = new Padding(5);
             mazoRobar.Name = "mazoRobar";
-            mazoRobar.Size = new Size(200, 250);
+            mazoRobar.Size = new Size(194, 294);
             mazoRobar.TabIndex = 2;
             mazoRobar.TabStop = false;
             mazoRobar.Click += MazoRobar_Click;
             // 
             // lblEstado
             // 
+            lblEstado.Anchor = AnchorStyles.Top;
             lblEstado.AutoSize = true;
             lblEstado.Font = new Font("Andalus", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 178);
-            lblEstado.Location = new Point(415, 55);
+            lblEstado.Location = new Point(363, 55);
             lblEstado.Name = "lblEstado";
-            lblEstado.Size = new Size(129, 33);
+            lblEstado.Size = new Size(445, 33);
             lblEstado.TabIndex = 3;
             lblEstado.Text = "Roba una carta del mazo o la pila de descarte";
-            lblEstado.Anchor = (AnchorStyles.Top);
+            // 
+            // centrarElementos
+            // 
+            centrarElementos.Anchor = AnchorStyles.None;
+            centrarElementos.AutoSize = true;
+            centrarElementos.ColumnCount = 4;
+            centrarElementos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            centrarElementos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            centrarElementos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            centrarElementos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            centrarElementos.Controls.Add(flpPilaDescarte, 2, 0);
+            centrarElementos.Controls.Add(mazoRobar, 1, 0);
+            centrarElementos.Controls.Add(cerrar, 3, 0);
+            centrarElementos.Location = new Point(153, 80);
+            centrarElementos.Name = "centrarElementos";
+            centrarElementos.RowCount = 1;
+            centrarElementos.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            centrarElementos.Size = new Size(816, 304);
+            centrarElementos.TabIndex = 4;
+            // 
+            // cerrar
+            // 
+            cerrar.Font = new Font("Andalus", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 178);
+            cerrar.Location = new Point(685, 5);
+            cerrar.Margin = new Padding(5);
+            cerrar.Name = "cerrar";
+            cerrar.Size = new Size(97, 43);
+            cerrar.TabIndex = 3;
+            cerrar.Text = "Cerrar";
+            cerrar.UseVisualStyleBackColor = true;
+            cerrar.Click += Cerrar_Click;
+            cerrar.Anchor = AnchorStyles.Bottom;
             // 
             // Partida
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1214, 661);
+            Controls.Add(centrarElementos);
             Controls.Add(lblEstado);
-            Controls.Add(mazoRobar);
-            Controls.Add(flpPilaDescarte);
             Controls.Add(flpManoJugador);
             Name = "Partida";
             Text = "Jugar";
             Load += Partida_Load;
             ((System.ComponentModel.ISupportInitialize)mazoRobar).EndInit();
+            centrarElementos.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -106,8 +144,9 @@ namespace Chinchon.src.forms {
 
         private FlowLayoutPanel flpManoJugador;
         private FlowLayoutPanel flpPilaDescarte;
-        private ImageList imageList1;
         private PictureBox mazoRobar;
         private Label lblEstado;
+        private TableLayoutPanel centrarElementos;
+        private Button cerrar;
     }
 }
