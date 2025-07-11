@@ -1,16 +1,17 @@
-﻿using System.Linq.Expressions;
-using Chinchon.src.Utils;
+﻿using Chinchon.src.Utils;
 
 namespace Chinchon.src.forms {
     public partial class Partida : Form {
         // Campos para poder usar las cartas
         private Cartas mazo;
         private List<string> manoJugador;
+        private List<string> manoComputadora;
 
         // Controlar el turno
         private enum EstadoTurno {
             EsperandoRobo,
-            EsperandoDescarte
+            EsperandoDescarte,
+            EsperandoOponente
         }
 
         private EstadoTurno estadoTurno = EstadoTurno.EsperandoRobo;
@@ -61,8 +62,8 @@ namespace Chinchon.src.forms {
                 flpManoJugador.Controls.Add(pictureBox);
             }
 
-            // DEBUG
-            Console.WriteLine($"\t[{string.Join(", ", manoJugador)}]");
+            // DEBUG -> Cambiar el tipo de ejecución a aplicación de consola (proyecto > propiedades)
+            // Console.WriteLine($"\t[{string.Join(", ", manoJugador)}]");
         }
 
         // Mouse Down (flpManoJugador)
@@ -227,6 +228,14 @@ namespace Chinchon.src.forms {
 
                     lblEstado.Text = "Descarta una carta";
                     break;
+
+                case EstadoTurno.EsperandoOponente:
+                    // Desactivar todo
+                    mazoRobar.Enabled = false;
+                    flpPilaDescarte.Enabled = false;
+
+                    lblEstado.Text = "Esperando al oponente...";
+                    break;
             }
         }
 
@@ -234,7 +243,78 @@ namespace Chinchon.src.forms {
         // CERRAR, TERMINA EL JUEGO
         // ==========================================
         private void Cerrar_Click(object sender, EventArgs e) {
-            //
+            if (!PuedeCerrar(manoJugador)) {
+                MessageBox.Show("¡TODAVÍA NO PUEDES CERRAR!",
+                                "Advertencia",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+            } else {
+                // Ocultar todos los elemetos
+                lblEstado.Hide();
+                flpPilaDescarte.Hide();
+                flpManoJugador.Hide();
+                mazoRobar.Hide();
+                centrarElementos.Hide();
+
+                // Calcular puntuaciones
+                int puntosJugador = CalcularPuntos(manoJugador);
+                int puntosComputadora = CalcularPuntos(manoComputadora);
+
+                string resultado;
+
+                // Suponemos que hacer chinchón son 0 puntos
+                if (puntosJugador == 0 && puntosComputadora == 0)
+                    resultado = "¡EMPATE! Ambos hicieron Chinchón.";
+                else if (puntosJugador == 0)
+                    resultado = "¡Ganaste con un Chinchón!";
+                else if (puntosComputadora == 0)
+                    resultado = "¡La computadora hizo Chinchón y gana!";
+                else if (puntosJugador > puntosComputadora)
+                    resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
+                else if (puntosComputadora > puntosJugador)
+                    resultado = $" ¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
+                else
+                    resultado = $"Empate a {puntosJugador} puntos.";
+
+                // Mostrar el texto
+                puntuaciones.Text = resultado;
+                puntuaciones.Show();
+            }
+        }
+
+        // Calcular la puntuación de la mano del jugador
+        private int CalcularPuntos(List<string> mano) {
+            // Chinchón
+            var palos = mano.Select(c => c.Split(' ')[1]).Distinct();
+
+            foreach (var palo in palos) {
+                var numeros = mano
+                    .Where(c => c.EndsWith(palo))
+                    .Select(c => int.Parse(c.Split(' ')[0]))
+                    .OrderBy(n => n)
+                    .ToList();
+
+                if (numeros.Count == 7 && EsEscalera(numeros)) return 0;
+            }
+
+            // Obtener los grupos
+            var grupos = ObtenerGrupos(mano);
+
+            // Selección golosa de grupos disjuntos
+            var seleccionados = new List<int>();
+            foreach (var g in grupos.OrderByDescending(g => g.Count)) {
+                if (!g.Any(idx => seleccionados.Contains(idx)))
+                    seleccionados.AddRange(g);
+            }
+
+            // Sumamos valores de cartas no agrupadas
+            int total = 0;
+            
+            for (int i = 0; i < mano.Count; i++) {
+                if (!seleccionados.Contains(i))
+                    total += int.Parse(mano[i].Split(' ')[0]);
+            }
+            return total;
         }
 
         // Dada una mano, comprueba si la carta sin casar es <= 5, o si están todas las cartas casadas
@@ -330,12 +410,13 @@ namespace Chinchon.src.forms {
             return true;
         }
 
-        private void Partida_Load(object sender, EventArgs e)
-        {
-            // Posicionar en el centro de la pantalla
-            this.CenterToScreen();
+        // ==========================================
+        // CARGAR EL FORMULARIO
+        // ==========================================
+        private void Partida_Load(object sender, EventArgs e) {
+            puntuaciones.Hide();
 
-            // Tamaño
+            this.CenterToScreen();
             this.Size = new Size(1230, 700);
 
             // Creamos y barajeamos el mazo
@@ -346,11 +427,10 @@ namespace Chinchon.src.forms {
             // Asignamos una mano al jugador
             var manos = mazo.RepartirCartas(7, 2);
             manoJugador = manos[0];
+            manoComputadora = manos[1]; // Será la mano que use la computadora
 
-            // Mostramos la mano del jugador
             MostarManoJugador();
 
-            // Creamos la pila de descarte y la mostramos
             string cartaPinta = mazo.CrearPilaDescarte();
             MostrarPilaDescarte(cartaPinta);
 

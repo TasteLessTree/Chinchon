@@ -31,6 +31,7 @@ namespace Chinchon.src.forms {
             lblEstado = new Label();
             centrarElementos = new TableLayoutPanel();
             cerrar = new Button();
+            puntuaciones = new Label();
             ((System.ComponentModel.ISupportInitialize)mazoRobar).BeginInit();
             centrarElementos.SuspendLayout();
             SuspendLayout();
@@ -76,6 +77,7 @@ namespace Chinchon.src.forms {
             mazoRobar.Margin = new Padding(5);
             mazoRobar.Name = "mazoRobar";
             mazoRobar.Size = new Size(194, 294);
+            mazoRobar.SizeMode = PictureBoxSizeMode.StretchImage;
             mazoRobar.TabIndex = 2;
             mazoRobar.TabStop = false;
             mazoRobar.Click += MazoRobar_Click;
@@ -85,7 +87,7 @@ namespace Chinchon.src.forms {
             lblEstado.Anchor = AnchorStyles.Top;
             lblEstado.AutoSize = true;
             lblEstado.Font = new Font("Andalus", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 178);
-            lblEstado.Location = new Point(363, 55);
+            lblEstado.Location = new Point(383, 24);
             lblEstado.Name = "lblEstado";
             lblEstado.Size = new Size(445, 33);
             lblEstado.TabIndex = 3;
@@ -112,8 +114,9 @@ namespace Chinchon.src.forms {
             // 
             // cerrar
             // 
+            cerrar.Anchor = AnchorStyles.Bottom;
             cerrar.Font = new Font("Andalus", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 178);
-            cerrar.Location = new Point(685, 5);
+            cerrar.Location = new Point(699, 256);
             cerrar.Margin = new Padding(5);
             cerrar.Name = "cerrar";
             cerrar.Size = new Size(97, 43);
@@ -121,7 +124,17 @@ namespace Chinchon.src.forms {
             cerrar.Text = "Cerrar";
             cerrar.UseVisualStyleBackColor = true;
             cerrar.Click += Cerrar_Click;
-            cerrar.Anchor = AnchorStyles.Bottom;
+            // 
+            // puntuaciones
+            // 
+            puntuaciones.Anchor = AnchorStyles.Top;
+            puntuaciones.AutoSize = true;
+            puntuaciones.Font = new Font("Andalus", 16F, FontStyle.Regular, GraphicsUnit.Point, 178);
+            puntuaciones.Location = new Point(533, 57);
+            puntuaciones.Name = "puntuaciones";
+            puntuaciones.Size = new Size(131, 33);
+            puntuaciones.TabIndex = 5;
+            puntuaciones.Text = "Puntuaciones";
             // 
             // Partida
             // 
@@ -131,6 +144,7 @@ namespace Chinchon.src.forms {
             Controls.Add(centrarElementos);
             Controls.Add(lblEstado);
             Controls.Add(flpManoJugador);
+            Controls.Add(puntuaciones);
             Name = "Partida";
             Text = "Jugar";
             Load += Partida_Load;
@@ -148,5 +162,6 @@ namespace Chinchon.src.forms {
         private Label lblEstado;
         private TableLayoutPanel centrarElementos;
         private Button cerrar;
+        private Label puntuaciones;
     }
 }
