@@ -18,7 +18,7 @@
         }
 
         // Volver al menú principal
-        private void goBack_Click(object sender, EventArgs e) {
+        private void GoBack_Click(object sender, EventArgs e) {
             // Cerrar este formulario
             this.Hide();
 
@@ -26,6 +26,10 @@
             var mainMenu = new MainMenu();
             mainMenu.Closed += (s, args) => this.Close();
             mainMenu.Show();
+        }
+
+        private void Tutorial_FormClosing(object sender, FormClosingEventArgs e) {
+            Application.Exit();
         }
     }
 }

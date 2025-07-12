@@ -132,7 +132,7 @@ namespace Chinchon.src.forms {
             puntuaciones.Font = new Font("Andalus", 16F, FontStyle.Regular, GraphicsUnit.Point, 178);
             puntuaciones.Location = new Point(533, 57);
             puntuaciones.Name = "puntuaciones";
-            puntuaciones.Size = new Size(131, 33);
+            puntuaciones.Size = new Size(135, 34);
             puntuaciones.TabIndex = 5;
             puntuaciones.Text = "Puntuaciones";
             // 
@@ -147,6 +147,7 @@ namespace Chinchon.src.forms {
             Controls.Add(puntuaciones);
             Name = "Partida";
             Text = "Jugar";
+            FormClosing += Partida_FormClosing;
             Load += Partida_Load;
             ((System.ComponentModel.ISupportInitialize)mazoRobar).EndInit();
             centrarElementos.ResumeLayout(false);

@@ -69,8 +69,7 @@ namespace Chinchon.src.forms {
 
         // Mouse Down (flpManoJugador)
         private void PB_MouseDown(object? sender, MouseEventArgs e) {
-            var pb = sender as PictureBox;
-            if (pb != null)
+            if (sender is PictureBox pb)
                 pb.DoDragDrop(pb, DragDropEffects.Move);
         }
 
@@ -159,8 +158,7 @@ namespace Chinchon.src.forms {
         private void PD_MouseDown(object? sender, MouseEventArgs e) {
             if (estadoTurno != EstadoTurno.EsperandoRobo) return;
 
-            var pb = sender as PictureBox;
-            if (pb != null) {
+            if (sender is PictureBox pb) {
                 pb.DoDragDrop(pb, DragDropEffects.Move);
 
                 CambiarEstadoTurno(EstadoTurno.EsperandoDescarte);
@@ -298,48 +296,41 @@ namespace Chinchon.src.forms {
         }
 
         // Calcular la puntuación de la mano del jugador
-        private int CalcularPuntos(List<string> mano) {
-            // Chinchón
-            var palos = mano.Select(c => c.Split(' ')[1]).Distinct();
-
-            foreach (var palo in palos) {
-                var numeros = mano
-                    .Where(c => c.EndsWith(palo))
-                    .Select(c => int.Parse(c.Split(' ')[0]))
-                    .OrderBy(n => n)
-                    .ToList();
-
-                if (numeros.Count == 7 && EsEscalera(numeros)) return 0;
-            }
-
-            // Obtener los grupos
-            var grupos = ObtenerGrupos(mano);
-
-            // Selección golosa de grupos disjuntos
-            var seleccionados = new List<int>();
-            foreach (var g in grupos.OrderByDescending(g => g.Count)) {
-                if (!g.Any(idx => seleccionados.Contains(idx)))
-                    seleccionados.AddRange(g);
-            }
-
-            // Sumamos valores de cartas no agrupadas
-            int total = 0;
+        private static int CalcularPuntos(List<string> mano) {
+            int puntuacion = 0;
             
-            for (int i = 0; i < mano.Count; i++) {
-                if (!seleccionados.Contains(i))
-                    total += int.Parse(mano[i].Split(' ')[0]);
-            }
-            return total;
+            // Chinchón son 0 puntos
+            if (EsChinchon(mano)) puntuacion = 0;
+
+            // Menos diez son -10 puntos
+            if (EsMenosDiez(mano)) puntuacion = -10;
+
+            // Si no es ninguna, se usa el valor de la carta sin casar
+            if (EsCartaSueltaMenorCinco(mano, out int valorSuelto)) puntuacion = valorSuelto;
+
+            return puntuacion;
         }
 
         // Dada una mano, comprueba si la carta sin casar es <= 5, o si están todas las cartas casadas
-        public bool PuedeCerrar(List<string> mano) {
+        public static bool PuedeCerrar(List<string> mano) {
+            if (EsChinchon(mano)) return true;
+
+            if (EsMenosDiez(mano)) return true;
+
+            // No nos iteresa el valorSuelto así que usamos el descartador (_)
+            if (EsCartaSueltaMenorCinco(mano, out _)) return true;
+
+            return false;
+        }
+
+        // Comprobar si es chinchón
+        private static bool EsChinchon(List<string> mano) {
             // Agrupa cartas por número y por palo
             var numeros = mano.Select(c => int.Parse(c.Split(' ')[0])).ToList();
-            var palos = mano.Select(c => c.Split(' ')[1]).ToList();
+            var palos = mano.Select(c => c.Split(' ')[1]).Distinct();
 
             // Comprobar si es escalera de 7 cartas del mismo palo (chinchón)
-            foreach (var palo in palos.Distinct()) {
+            foreach (var palo in palos) {
                 var numerosDePalo = mano
                     .Where(c => c.EndsWith(palo))
                     .Select(c => int.Parse(c.Split(' ')[0]))
@@ -350,6 +341,11 @@ namespace Chinchon.src.forms {
                 if (numerosDePalo.Count == 7 && EsEscalera(numerosDePalo)) return true;
             }
 
+            return false;
+        }
+
+        // Comprobar si es menos diez (-10)
+        private static bool EsMenosDiez(List<string> mano) {
             // Comprobar si es menos 10 (4 cartas casadas por un lado, 3 cartas casadas por el otro)
             var grupos = ObtenerGrupos(mano);
 
@@ -357,27 +353,41 @@ namespace Chinchon.src.forms {
                 grupos.Any(g => g.Count == 3) &&
                 grupos.Sum(g => g.Count) == 7) return true;
 
+            return false;
+        }
+
+        // Comprobar si la carta que no se ha casado es <= 5
+        // "EsLaCartaSinCasarMenorOIgualACinco" era demasiado largo y lo he cambiado a "EsCartaSueltaMenorCinco"
+        private static bool EsCartaSueltaMenorCinco(List<string> mano, out int valorSuelto) {
+            valorSuelto = 0; // Por defecto, usamos "out" para calcular el puntaje
+
+            var grupos = ObtenerGrupos(mano);
+
             // Comprobar seis cartas casadas y una suelta <= 5
             if (grupos.Sum(g => g.Count) == 6 && mano.Count == 7) {
                 var indicesAgrupados = grupos.SelectMany(g => g).ToList();
                 var cartaSuelta = mano.Where((c, i) => !indicesAgrupados.Contains(i)).FirstOrDefault();
 
                 if (cartaSuelta != null) {
-                    int valorSuelto = int.Parse(cartaSuelta.Split(' ')[0]);
-                    
+                    valorSuelto = int.Parse(cartaSuelta.Split(' ')[0]);
+
                     if (valorSuelto <= 5) return true;
                 }
             }
+
+            // DEBUG:
+            // Console.WriteLine($"Carta sin casar(valor suleto): {valorSuelto}");
 
             return false;
         }
 
         // Devuelve una lista de grupos de índices de cartas agrupadas (por número o escalera)
-        private List<List<int>> ObtenerGrupos(List<string> mano) {
+        private static List<List<int>> ObtenerGrupos(List<string> mano) {
             var grupos = new List<List<int>>();
 
             // Buscar tríos y cuartetos
             var numeros = mano.Select(c => int.Parse(c.Split(' ')[0])).ToList();
+
             for (int n = 1; n <= 12; n++) {
                 var indices = numeros
                     .Select((num, idx) => num == n ? idx : -1)
@@ -412,11 +422,12 @@ namespace Chinchon.src.forms {
                     if (escalera.Count >= 3) grupos.Add(escalera);
                 }
             }
+
             return grupos;
         }
 
         // Comprobar si es una escalera de números consecutivos
-        private bool EsEscalera(List<int> numeros) {
+        private static bool EsEscalera(List<int> numeros) {
             numeros.Sort();
 
             for (int i = 1; i < numeros.Count; i++) {
@@ -453,6 +464,13 @@ namespace Chinchon.src.forms {
             string rutaReverso = Path.Combine(Application.StartupPath, "assets", "images", "REVERSO.jpg");
             mazoRobar.Image = Image.FromFile(rutaReverso);
             mazoRobar.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        // ==========================================
+        // CERRAR EL FORMULARIO
+        // ==========================================
+        private void Partida_FormClosing(object sender, FormClosingEventArgs e) {
+            Application.Exit();
         }
     }
 }

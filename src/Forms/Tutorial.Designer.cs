@@ -59,7 +59,7 @@
             goBack.TabIndex = 4;
             goBack.Text = "Volver";
             goBack.UseVisualStyleBackColor = true;
-            goBack.Click += goBack_Click;
+            goBack.Click += GoBack_Click;
             // 
             // rules
             // 
@@ -83,6 +83,7 @@
             Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             Name = "Tutorial";
             Text = "Tutorial";
+            FormClosing += Tutorial_FormClosing;
             Load += Tutorial_Load;
             ResumeLayout(false);
             PerformLayout();
