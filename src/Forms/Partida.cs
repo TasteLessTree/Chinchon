@@ -62,7 +62,8 @@ namespace Chinchon.src.forms {
                 flpManoJugador.Controls.Add(pictureBox);
             }
 
-            // DEBUG -> Cambiar el tipo de ejecución a aplicación de consola (proyecto > propiedades)
+            // DEBUG -> Cambiar el tipo de ejecución a aplicación de consola (proyecto > propiedades) o:
+            // Chinchon.csproj -> cambiar: "<OutputType>WinExe</OutputType>" -> a: "<OutputType>Exe</OutputType>"
             // Console.WriteLine($"\t[{string.Join(", ", manoJugador)}]");
         }
 
@@ -111,7 +112,21 @@ namespace Chinchon.src.forms {
                 // Reposicionar la imagen
                 flpManoJugador.Controls.SetChildIndex(pb, indice);
                 flpManoJugador.Invalidate();
+
+                // Actualizar la lista interna según el nuevo orden del panel
+                ActualizarManoJugadorDesdePanel();
             }
+        }
+
+        // Recontruye la lista manoJugador desde el orden de flpManoJugador.Controls
+        // Ejemplo: visualmente tienes; 12 COPAS, 4 OROS, 5 ESPADAS, 5 BASTOS, ...
+        // Pero internamente tienes; 4 OROS, 12 COPAS, 5 ESPADAS, 5 BASTOS, ...
+        // Este método hace que la parte interna se actualize acorde a la parte visual
+        private void ActualizarManoJugadorDesdePanel() {
+            manoJugador = flpManoJugador.Controls
+                .OfType<PictureBox>()
+                .Select(pb => pb.Tag.ToString())
+                .ToList();
         }
 
         // ==========================================
