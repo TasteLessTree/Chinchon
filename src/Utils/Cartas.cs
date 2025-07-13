@@ -33,7 +33,7 @@ namespace Chinchon.src.Utils {
             // Para dar más inmersión
             string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "barajeo.wav");
 
-            SoundPlayer soundPlayer = new SoundPlayer(rutaSonido);
+            SoundPlayer soundPlayer = new(rutaSonido);
             soundPlayer.Play();
 
             var random = new Random();
