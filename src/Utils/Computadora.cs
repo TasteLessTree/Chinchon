@@ -11,8 +11,8 @@ namespace Chinchon.src.Utils {
         public Computadora(Cartas mazo, Func<string> obtenerTopePilaDescarte) {
             this.mazo = mazo;
             this.obtenerTopePilaDescarte = obtenerTopePilaDescarte;
-            this.random = new Random();
-            this.mano = new List<string>();
+            random = new Random();
+            mano = new List<string>();
         }
 
         // Métodos
@@ -22,8 +22,7 @@ namespace Chinchon.src.Utils {
         }
 
         // Robar del mazo o de la pila de descarte
-        private string RobarDelMazo()
-        {
+        private string RobarDelMazo() {
             string carta = mazo.RobarCarta();
             mano.Add(carta);
             return carta;

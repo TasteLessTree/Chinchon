@@ -7,6 +7,9 @@ namespace Chinchon.src.forms {
         private List<string> manoJugador;
         private List<string> manoComputadora;
 
+        // Lógica de la computadora
+        private Computadora computadora;
+
         // Controlar el turno
         private enum EstadoTurno {
             EsperandoRobo,
@@ -189,10 +192,33 @@ namespace Chinchon.src.forms {
                 string nombreCarta = pb.Tag.ToString();
                 manoJugador.Remove(nombreCarta);
 
-                CambiarEstadoTurno(EstadoTurno.EsperandoRobo);
-
                 MostarManoJugador();
+
+                // Turno de la computadora
+                CambiarEstadoTurno(EstadoTurno.EsperandoOponente);
+                TurnoComputadora();
             }
+        }
+
+        // ==========================================
+        // TURNO DE LA COMPUTADORA
+        // ==========================================
+        private void TurnoComputadora() {
+            var (cartaRobada, cartaDescartada, cierra) = computadora.JugarTurno();
+
+            // Si roba de la pila, quitar la carta actual y añadir cartaDescarte
+            if (flpPilaDescarte.Controls.Count > 0 &&
+                flpPilaDescarte.Controls[0].Tag.ToString() == cartaRobada) {
+                flpPilaDescarte.Controls.Clear();
+            }
+
+            MostrarPilaDescarte(cartaDescartada);
+
+            // Comprobar si puede robar
+            if (cierra)
+                Cerrar_Click(null, EventArgs.Empty);
+            else
+                CambiarEstadoTurno(EstadoTurno.EsperandoRobo);
         }
 
         // ==========================================
@@ -312,7 +338,16 @@ namespace Chinchon.src.forms {
             // Asignamos una mano al jugador
             var manos = mazo.RepartirCartas(7, 2);
             manoJugador = manos[0];
-            manoComputadora = manos[1]; // Será la mano que use la computadora
+            manoComputadora = manos[1];
+
+            // Crear computadora
+            computadora = new Computadora(
+                mazo,
+                () => flpPilaDescarte.Controls.Count > 0
+                    ? flpPilaDescarte.Controls[0].Tag.ToString()
+                    : null);
+
+            computadora.RecibirManoInicial(manoComputadora);
 
             MostarManoJugador();
 
