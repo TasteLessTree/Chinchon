@@ -3,7 +3,6 @@
 namespace Chinchon.src.Utils {
     internal class Computadora {
         private readonly Cartas mazo;
-        private readonly Random random;
         private readonly Func<string> obtenerTopePilaDescarte;
         private List<string> mano;
 
@@ -11,7 +10,6 @@ namespace Chinchon.src.Utils {
         public Computadora(Cartas mazo, Func<string> obtenerTopePilaDescarte) {
             this.mazo = mazo;
             this.obtenerTopePilaDescarte = obtenerTopePilaDescarte;
-            random = new Random();
             mano = new List<string>();
         }
 

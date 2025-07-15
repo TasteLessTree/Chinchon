@@ -203,7 +203,10 @@ namespace Chinchon.src.forms {
         // ==========================================
         // TURNO DE LA COMPUTADORA
         // ==========================================
-        private void TurnoComputadora() {
+        private async void TurnoComputadora() {
+            // Esperar un par de segundos para que no sea instantáneo
+            await Task.Delay(2500);
+
             var (cartaRobada, cartaDescartada, cierra) = computadora.JugarTurno();
 
             // Si roba de la pila, quitar la carta actual y añadir cartaDescarte
@@ -256,22 +259,25 @@ namespace Chinchon.src.forms {
                     // Se puede robar
                     mazoRobar.Enabled = true;
                     flpPilaDescarte.AllowDrop = false;
+                    flpPilaDescarte.Enabled = true;
 
                     lblEstado.Text = "Roba una carta del mazo o la pila de descarte";
                     break;
 
                 case EstadoTurno.EsperandoDescarte:
-                    // No puedes robar
+                    // No puedes robar, solo descartar
                     mazoRobar.Enabled = false;
                     flpPilaDescarte.AllowDrop = true;
+                    flpPilaDescarte.Enabled = true;
 
                     lblEstado.Text = "Descarta una carta";
                     break;
 
                 case EstadoTurno.EsperandoOponente:
-                    // Desactivar todo
+                    // Desactivar todo durante el turno de la computadora
                     mazoRobar.Enabled = false;
-                    flpPilaDescarte.Enabled = false;
+                    flpPilaDescarte.AllowDrop = false;
+                    flpPilaDescarte.Enabled = false; 
 
                     lblEstado.Text = "Esperando al oponente...";
                     break;
