@@ -81,6 +81,7 @@
             Controls.Add(instructions);
             Controls.Add(titulo);
             Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Tutorial";
             Text = "Tutorial";
             FormClosing += Tutorial_FormClosing;

@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>assets\icons\icon_80x80.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="assets\icons\icon_80x80.ico" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="assets\images\" />

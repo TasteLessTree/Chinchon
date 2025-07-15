@@ -25,6 +25,7 @@ namespace Chinchon.src.forms {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Partida));
             flpManoJugador = new FlowLayoutPanel();
             flpPilaDescarte = new FlowLayoutPanel();
             mazoRobar = new PictureBox();
@@ -145,6 +146,7 @@ namespace Chinchon.src.forms {
             Controls.Add(lblEstado);
             Controls.Add(flpManoJugador);
             Controls.Add(puntuaciones);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Partida";
             Text = "Jugar";
             FormClosing += Partida_FormClosing;

@@ -23,6 +23,7 @@
         ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
             titulo = new Label();
             play = new Button();
             tutorial = new Button();
@@ -81,6 +82,7 @@
             Controls.Add(tutorial);
             Controls.Add(play);
             Controls.Add(titulo);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainMenu";
             Text = "Chinchón - Menú";
             Load += MainMenu_Load;
