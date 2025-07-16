@@ -21,12 +21,24 @@
             // Menos diez son -10 puntos
             if (EsMenosDiez(mano)) return -10;
 
+            // Si la carta sin casar es menor a 5
+            if (EsCartaSueltaMenorCinco(mano, out int valorSuelto)) return valorSuelto;
 
-            // Si no es ninguna, se usa el valor de la carta sin casar
-            EsCartaSueltaMenorCinco(mano, out int valorSuelto);
-            int puntuacion = valorSuelto;
+            // Si no es ninguno de los tres casos anteriores
+            // Contamos los puntos de las cartas sin casar
+            var grupos = ObtenerGrupos(mano);
+            var indicesAgrupados = grupos.SelectMany(g => g).ToHashSet();
 
-            return puntuacion;
+            int puntosTotales = 0;
+
+            for (int i = 0; i < mano.Count; i++) {
+                if (!indicesAgrupados.Contains(i)) {
+                    int valor = int.Parse(mano[i].Split(' ')[0]);
+                    puntosTotales += valor;
+                }
+            }
+
+            return puntosTotales;
         }
 
         // Comprobar si la carta que no se ha casado es <= 5
@@ -58,18 +70,22 @@
         private static bool EsChinchon(List<string> mano) {
             // Agrupa cartas por número y por palo
             var numeros = mano.Select(c => int.Parse(c.Split(' ')[0])).ToList();
-            var palos = mano.Select(c => c.Split(' ')[1]).Distinct();
+            var palos = mano.Select(c => c.Split(' ')[1].Trim()).Distinct();
 
             // Comprobar si es escalera de 7 cartas del mismo palo (chinchón)
             foreach (var palo in palos) {
                 var numerosDePalo = mano
-                    .Where(c => c.EndsWith(palo))
+                    .Where(c => c.Split(' ')[1].Trim() == palo)
                     .Select(c => int.Parse(c.Split(' ')[0]))
                     .OrderBy(n => n)
                     .ToList();
 
                 // ¡Chinchón!
-                if (numerosDePalo.Count == 7 && EsEscalera(numerosDePalo)) return true;
+                if (numerosDePalo.Count == 7 && EsEscalera(numerosDePalo)) {
+                    // DEBUG:
+                    // Console.WriteLine($"Chinchón detectado en mano: [{string.Join(", ", mano)}]");
+                    return true; 
+                }
             }
 
             return false;
@@ -92,7 +108,11 @@
 
             if (grupos.Any(g => g.Count == 4) &&
                 grupos.Any(g => g.Count == 3) &&
-                grupos.Sum(g => g.Count) == 7) return true;
+                grupos.Sum(g => g.Count) == 7) {
+                // DEBUG:
+                // Console.WriteLine($"Menos diez detectado en mano: [{string.Join(", ", mano)}]");
+                return true; 
+            }
 
             return false;
         }
@@ -100,6 +120,9 @@
         // Devuelve una lista de grupos de índices de cartas agrupadas (por número o escalera)
         private static List<List<int>> ObtenerGrupos(List<string> mano) {
             var grupos = new List<List<int>>();
+
+            // HashSet para controlar las cartas ya usadas
+            var usados = new HashSet<int>();
 
             // Buscar tríos y cuartetos
             var numeros = mano.Select(c => int.Parse(c.Split(' ')[0])).ToList();
@@ -109,12 +132,14 @@
                     .Select((num, idx) => num == n ? idx : -1)
                     .Where(idx => idx != -1)
                     .ToList();
-                if (indices.Count >= 3)
+                if (indices.Count >= 3 && indices.All(i => !usados.Contains(i))) {
                     grupos.Add(indices);
+                    foreach (var idx in indices) usados.Add(idx);
+                }
             }
 
             // Buscar escaleras por palo
-            var palos = mano.Select(c => c.Split(' ')[1]).Distinct();
+            var palos = mano.Select(c => c.Split(' ')[1].Trim()).Distinct();
 
             foreach (var palo in palos) {
                 var cartasDePalo = mano
@@ -135,7 +160,12 @@
                             actual++;
                         } else if (cartasDePalo[j].Num > actual + 1) break;
                     }
-                    if (escalera.Count >= 3) grupos.Add(escalera);
+                    if (escalera.Count >= 3 && escalera.All(i => !usados.Contains(i))) {
+                        grupos.Add(escalera);
+                        foreach (var idx in escalera) usados.Add(idx);
+                        // Saltamos las cartas ya agrupadas
+                        i += escalera.Count - 1;
+                    }
                 }
             }
 
