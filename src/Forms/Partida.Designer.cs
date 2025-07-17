@@ -131,7 +131,7 @@ namespace Chinchon.src.forms {
             puntuaciones.Anchor = AnchorStyles.Top;
             puntuaciones.AutoSize = true;
             puntuaciones.Font = new Font("Andalus", 16F, FontStyle.Regular, GraphicsUnit.Point, 178);
-            puntuaciones.Location = new Point(533, 57);
+            puntuaciones.Location = new Point(383, 43);
             puntuaciones.Name = "puntuaciones";
             puntuaciones.Size = new Size(135, 34);
             puntuaciones.TabIndex = 5;

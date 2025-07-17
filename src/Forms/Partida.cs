@@ -3,12 +3,12 @@
 namespace Chinchon.src.forms {
     public partial class Partida : Form {
         // Campos para poder usar las cartas
-        private Cartas mazo;
-        private List<string> manoJugador;
-        private List<string> manoComputadora;
+        private Cartas mazo = null!;
+        private List<string> manoJugador = new List<string>();
+        private List<string> manoComputadora = new List<string>();
 
         // Lógica de la computadora
-        private Computadora computadora;
+        private Computadora computadora = null!;
 
         // Controlar el turno
         private enum EstadoTurno {
@@ -100,7 +100,7 @@ namespace Chinchon.src.forms {
                     flpManoJugador.Controls.Add(pb);
 
                     // Actualizar la mano del jugador internamente
-                    manoJugador.Add(pb.Tag.ToString());
+                    manoJugador.Add(pb.Tag!.ToString()!);
                 }
 
                 // Calcular la posición de las cartas
@@ -112,7 +112,7 @@ namespace Chinchon.src.forms {
                     : flpManoJugador.Controls.GetChildIndex(target, false);
 
                 // Reposicionar la imagen
-                flpManoJugador.Controls.SetChildIndex(pb, indice);
+                flpManoJugador.Controls.SetChildIndex(pb!, indice);
                 flpManoJugador.Invalidate();
 
                 // Actualizar la lista interna según el nuevo orden del panel
@@ -125,10 +125,9 @@ namespace Chinchon.src.forms {
         // Pero internamente tienes; 4 OROS, 12 COPAS, 5 ESPADAS, 5 BASTOS, ...
         // Este método hace que la parte interna se actualize acorde a la parte visual
         private void ActualizarManoJugadorDesdePanel() {
-            manoJugador = flpManoJugador.Controls
+            manoJugador = [.. flpManoJugador.Controls
                 .OfType<PictureBox>()
-                .Select(pb => pb.Tag.ToString())
-                .ToList();
+                .Select(pb => pb.Tag!.ToString()!)];
         }
 
         // ==========================================
@@ -189,7 +188,7 @@ namespace Chinchon.src.forms {
                 flpPilaDescarte.Controls.Add(pb);
 
                 // Actualiza la lista interna de la mano
-                string nombreCarta = pb.Tag.ToString();
+                string nombreCarta = pb!.Tag!.ToString()!;
                 manoJugador.Remove(nombreCarta);
 
                 MostarManoJugador();
@@ -211,7 +210,7 @@ namespace Chinchon.src.forms {
 
             // Si roba de la pila, quitar la carta actual y añadir cartaDescarte
             if (flpPilaDescarte.Controls.Count > 0 &&
-                flpPilaDescarte.Controls[0].Tag.ToString() == cartaRobada) {
+                flpPilaDescarte.Controls[0].Tag!.ToString()! == cartaRobada) {
                 flpPilaDescarte.Controls.Clear();
             }
 
@@ -219,7 +218,7 @@ namespace Chinchon.src.forms {
 
             // Comprobar si puede robar
             if (cierra)
-                Cerrar_Click(null, EventArgs.Empty);
+                Cerrar_Click(null!, EventArgs.Empty);
             else
                 CambiarEstadoTurno(EstadoTurno.EsperandoRobo);
         }
@@ -260,7 +259,6 @@ namespace Chinchon.src.forms {
                     mazoRobar.Enabled = true;
                     flpPilaDescarte.AllowDrop = false;
                     flpPilaDescarte.Enabled = true;
-
                     lblEstado.Text = "Roba una carta del mazo o la pila de descarte";
                     break;
 
@@ -269,7 +267,6 @@ namespace Chinchon.src.forms {
                     mazoRobar.Enabled = false;
                     flpPilaDescarte.AllowDrop = true;
                     flpPilaDescarte.Enabled = true;
-
                     lblEstado.Text = "Descarta una carta";
                     break;
 
@@ -277,8 +274,7 @@ namespace Chinchon.src.forms {
                     // Desactivar todo durante el turno de la computadora
                     mazoRobar.Enabled = false;
                     flpPilaDescarte.AllowDrop = false;
-                    flpPilaDescarte.Enabled = false; 
-
+                    flpPilaDescarte.Enabled = false;
                     lblEstado.Text = "Esperando al oponente...";
                     break;
             }
@@ -315,9 +311,9 @@ namespace Chinchon.src.forms {
                 else if (puntosComputadora == 0)
                     resultado = "¡La computadora hizo Chinchón y gana!";
                 else if (puntosJugador > puntosComputadora)
+                    resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
+                else if (puntosJugador < puntosComputadora)
                     resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
-                else if (puntosComputadora > puntosJugador)
-                    resultado = $" ¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
                 else
                     resultado = $"Empate a {puntosJugador} puntos.";
 
@@ -350,8 +346,8 @@ namespace Chinchon.src.forms {
             computadora = new Computadora(
                 mazo,
                 () => flpPilaDescarte.Controls.Count > 0
-                    ? flpPilaDescarte.Controls[0].Tag.ToString()
-                    : null);
+                    ? flpPilaDescarte.Controls[0].Tag!.ToString()!
+                    : null!);
 
             computadora.RecibirManoInicial(manoComputadora);
 

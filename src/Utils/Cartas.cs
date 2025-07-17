@@ -3,7 +3,7 @@
 namespace Chinchon.src.Utils {
     internal class Cartas {
         // Campos
-        private List<string> mazo;
+        private readonly List<string> mazo;
 
         // Constructor, crea las cartas
         public Cartas() { 
