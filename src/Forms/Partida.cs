@@ -216,10 +216,15 @@ namespace Chinchon.src.forms {
 
             MostrarPilaDescarte(cartaDescartada);
 
+            // DEBUG:
+            Console.WriteLine($"Mano de la computadora: [{string.Join(", ", manoComputadora)}]");
+
             // Comprobar si puede robar
-            if (cierra)
-                Cerrar_Click(null!, EventArgs.Empty);
-            else
+            if (cierra) {
+                // DEBUG:
+                Console.WriteLine("La computadora va a cerrar");
+                FinalizarJuego(manoComputadora);
+            } else
                 CambiarEstadoTurno(EstadoTurno.EsperandoRobo);
         }
 
@@ -284,11 +289,18 @@ namespace Chinchon.src.forms {
         // CERRAR, TERMINA EL JUEGO
         // ==========================================
         private void Cerrar_Click(object sender, EventArgs e) {
-            if (!PartidaHelpers.PuedeCerrar(manoJugador)) {
+            // DEBUG:
+            Console.WriteLine("El usuario ha hecho click");
+            FinalizarJuego(manoJugador);
+        }
+
+        private void FinalizarJuego(List<string> mano) {
+            if (!PartidaHelpers.PuedeCerrar(mano)) {
                 MessageBox.Show("¡TODAVÍA NO PUEDES CERRAR!",
                                 "Advertencia",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Warning);
+                return;
             } else {
                 // Ocultar todos los elemetos
                 lblEstado.Hide();
@@ -303,19 +315,35 @@ namespace Chinchon.src.forms {
 
                 string resultado;
 
-                // Suponemos que hacer chinchón son 0 puntos
-                if (puntosJugador == 0 && puntosComputadora == 0)
-                    resultado = "¡EMPATE! Ambos hicieron Chinchón.";
-                else if (puntosJugador == 0)
-                    resultado = "¡Ganaste con un Chinchón!";
-                else if (puntosComputadora == 0)
-                    resultado = "¡La computadora hizo Chinchón y gana!";
-                else if (puntosJugador > puntosComputadora)
-                    resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
-                else if (puntosJugador < puntosComputadora)
-                    resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
-                else
-                    resultado = $"Empate a {puntosJugador} puntos.";
+                if (mano == manoJugador) {
+                    // Suponemos que hacer chinchón son 0 puntos
+                    if (puntosJugador == 0 && puntosComputadora == 0)
+                        resultado = "¡EMPATE! Ambos hicieron Chinchón.";
+                    else if (puntosJugador == 0)
+                        resultado = "¡Ganaste con un Chinchón!";
+                    else if (puntosComputadora == 0)
+                        resultado = "¡La computadora hizo Chinchón y gana!";
+                    else if (puntosJugador > puntosComputadora)
+                        resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
+                    else if (puntosJugador < puntosComputadora)
+                        resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
+                    else
+                        resultado = $"Empate a {puntosJugador} puntos.";
+                } else {
+                    // mano == manoComputadora
+                    if (puntosJugador == 0 && puntosComputadora == 0)
+                        resultado = "¡EMPATE! Ambos hicieron Chinchón.";
+                    else if (puntosJugador == 0)
+                        resultado = "¡Ganaste con un Chinchón!";
+                    else if (puntosComputadora == 0)
+                        resultado = "¡La computadora hizo Chinchón y gana!";
+                    else if (puntosJugador > puntosComputadora)
+                        resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
+                    else if (puntosJugador < puntosComputadora)
+                        resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
+                    else
+                        resultado = $"Empate a {puntosJugador} puntos.";
+                }
 
                 // Mostrar el texto
                 puntuaciones.Text = resultado;
