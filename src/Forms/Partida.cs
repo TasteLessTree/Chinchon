@@ -208,6 +208,8 @@ namespace Chinchon.src.forms {
 
             var (cartaRobada, cartaDescartada, cierra) = computadora.JugarTurno();
 
+            ActualizarManoComputadora(cartaRobada, cartaDescartada);
+
             // Si roba de la pila, quitar la carta actual y añadir cartaDescarte
             if (flpPilaDescarte.Controls.Count > 0 &&
                 flpPilaDescarte.Controls[0].Tag!.ToString()! == cartaRobada) {
@@ -217,15 +219,19 @@ namespace Chinchon.src.forms {
             MostrarPilaDescarte(cartaDescartada);
 
             // DEBUG:
-            Console.WriteLine($"Mano de la computadora: [{string.Join(", ", manoComputadora)}]");
+            // Console.WriteLine($"Mano de la computadora: [{string.Join(", ", manoComputadora)}]");
 
             // Comprobar si puede robar
             if (cierra) {
-                // DEBUG:
-                Console.WriteLine("La computadora va a cerrar");
                 FinalizarJuego(manoComputadora);
             } else
                 CambiarEstadoTurno(EstadoTurno.EsperandoRobo);
+        }
+
+        private void ActualizarManoComputadora(string cartaRobada, string cartaDescartada) {
+            // Añadir la carta que roba y quitar la carta descartada
+            manoComputadora.Add(cartaRobada);
+            manoComputadora.Remove(cartaDescartada);
         }
 
         // ==========================================
@@ -289,8 +295,6 @@ namespace Chinchon.src.forms {
         // CERRAR, TERMINA EL JUEGO
         // ==========================================
         private void Cerrar_Click(object sender, EventArgs e) {
-            // DEBUG:
-            Console.WriteLine("El usuario ha hecho click");
             FinalizarJuego(manoJugador);
         }
 

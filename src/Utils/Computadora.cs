@@ -55,7 +55,7 @@ namespace Chinchon.src.Utils {
         }
 
         // Jugar el turno
-        // Devulve una tulpa:
+        // Devulve una tupla:
         // - Con la carta que roba (cartaRobada) ya sea del mazo o de la pila de descarte
         // - Con la carta que deja (cartaDescartada) una carta de su mano
         // - Con una bandera adicional indicando si tras el descarte puede cerrar
