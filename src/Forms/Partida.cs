@@ -143,8 +143,8 @@ namespace Chinchon.src.forms {
 
             // Crear la imagen
             PictureBox pictureBox = new() {
-                Width = 150,
-                Height = 230,
+                Width = 185,
+                Height = 285,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Image = Image.FromFile(rutaImagen),
                 Tag = carta
@@ -362,7 +362,13 @@ namespace Chinchon.src.forms {
             puntuaciones.Hide();
 
             this.CenterToScreen();
-            this.Size = new Size(1230, 700);
+            this.Size = new Size(1375, 750);
+
+            // Mantener los controles (mazo, pila de descarte) en el centro
+            this.Resize += (s, e) => {
+                centrarElementos.Left = (this.ClientSize.Width - centrarElementos.Width) / 2;
+                centrarElementos.Top = (this.ClientSize.Height - centrarElementos.Height) / 3;
+            };
 
             // Creamos y barajeamos el mazo
             mazo = new Cartas();

@@ -44,11 +44,11 @@ namespace Chinchon.src.forms {
             flpManoJugador.AutoScroll = true;
             flpManoJugador.BackColor = SystemColors.Control;
             flpManoJugador.ForeColor = SystemColors.ControlText;
-            flpManoJugador.Location = new Point(14, 392);
+            flpManoJugador.Location = new Point(14, 442);
             flpManoJugador.Margin = new Padding(5);
             flpManoJugador.Name = "flpManoJugador";
             flpManoJugador.Padding = new Padding(5);
-            flpManoJugador.Size = new Size(1184, 255);
+            flpManoJugador.Size = new Size(1331, 255);
             flpManoJugador.TabIndex = 0;
             flpManoJugador.DragDrop += FlpManoJugador_DragDrop;
             flpManoJugador.DragEnter += FlpManoJugador_DragEnter;
@@ -85,14 +85,14 @@ namespace Chinchon.src.forms {
             // 
             // lblEstado
             // 
-            lblEstado.Anchor = AnchorStyles.Top;
-            lblEstado.AutoSize = true;
-            lblEstado.Font = new Font("Andalus", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 178);
-            lblEstado.Location = new Point(383, 24);
+            lblEstado.Dock = DockStyle.Top;
+            lblEstado.Font = new Font("Andalus", 20F, FontStyle.Bold, GraphicsUnit.Point, 178);
+            lblEstado.Location = new Point(0, 40);
             lblEstado.Name = "lblEstado";
-            lblEstado.Size = new Size(445, 33);
+            lblEstado.Size = new Size(1359, 40);
             lblEstado.TabIndex = 3;
             lblEstado.Text = "Roba una carta del mazo o la pila de descarte";
+            lblEstado.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // centrarElementos
             // 
@@ -106,7 +106,7 @@ namespace Chinchon.src.forms {
             centrarElementos.Controls.Add(flpPilaDescarte, 2, 0);
             centrarElementos.Controls.Add(mazoRobar, 1, 0);
             centrarElementos.Controls.Add(cerrar, 3, 0);
-            centrarElementos.Location = new Point(153, 80);
+            centrarElementos.Location = new Point(225, 105);
             centrarElementos.Name = "centrarElementos";
             centrarElementos.RowCount = 1;
             centrarElementos.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -128,20 +128,20 @@ namespace Chinchon.src.forms {
             // 
             // puntuaciones
             // 
-            puntuaciones.Anchor = AnchorStyles.Top;
-            puntuaciones.AutoSize = true;
-            puntuaciones.Font = new Font("Andalus", 16F, FontStyle.Regular, GraphicsUnit.Point, 178);
-            puntuaciones.Location = new Point(383, 43);
+            puntuaciones.Dock = DockStyle.Top;
+            puntuaciones.Font = new Font("Andalus", 20F, FontStyle.Regular, GraphicsUnit.Point, 178);
+            puntuaciones.Location = new Point(0, 0);
             puntuaciones.Name = "puntuaciones";
-            puntuaciones.Size = new Size(135, 34);
+            puntuaciones.Size = new Size(1359, 40);
             puntuaciones.TabIndex = 5;
             puntuaciones.Text = "Puntuaciones";
+            puntuaciones.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // Partida
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1214, 661);
+            ClientSize = new Size(1359, 711);
             Controls.Add(centrarElementos);
             Controls.Add(lblEstado);
             Controls.Add(flpManoJugador);
