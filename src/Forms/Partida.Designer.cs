@@ -73,11 +73,10 @@ namespace Chinchon.src.forms {
             // 
             mazoRobar.BackgroundImage = Properties.Resources.MAZO;
             mazoRobar.BackgroundImageLayout = ImageLayout.Stretch;
-            mazoRobar.Dock = DockStyle.Fill;
             mazoRobar.Location = new Point(277, 5);
             mazoRobar.Margin = new Padding(5);
             mazoRobar.Name = "mazoRobar";
-            mazoRobar.Size = new Size(194, 294);
+            mazoRobar.Size = new Size(150, 230);
             mazoRobar.SizeMode = PictureBoxSizeMode.StretchImage;
             mazoRobar.TabIndex = 2;
             mazoRobar.TabStop = false;

@@ -1,4 +1,5 @@
 ﻿using Chinchon.src.Utils;
+using System.Media;
 
 namespace Chinchon.src.forms {
     public partial class Partida : Form {
@@ -143,8 +144,8 @@ namespace Chinchon.src.forms {
 
             // Crear la imagen
             PictureBox pictureBox = new() {
-                Width = 185,
-                Height = 285,
+                Width = 150,
+                Height = 230,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Image = Image.FromFile(rutaImagen),
                 Tag = carta
@@ -192,6 +193,7 @@ namespace Chinchon.src.forms {
                 manoJugador.Remove(nombreCarta);
 
                 MostarManoJugador();
+                CartaSonido();
 
                 // Turno de la computadora
                 CambiarEstadoTurno(EstadoTurno.EsperandoOponente);
@@ -241,6 +243,7 @@ namespace Chinchon.src.forms {
             if (estadoTurno != EstadoTurno.EsperandoRobo) return;
 
             try {
+                CartaSonido();
                 // Robar la carta y añadirla a la mano del jugador
                 string carta = mazo.RobarCarta();
                 manoJugador.Add(carta);
@@ -256,6 +259,14 @@ namespace Chinchon.src.forms {
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Warning);
             }
+        }
+
+        private static void CartaSonido() {
+            // Reproducir un sonido al interactuar con una carta: https://pixabay.com/sound-effects/flipcard-91468/
+            string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "carta.wav");
+
+            SoundPlayer soundPlayer = new(rutaSonido);
+            soundPlayer.Play();
         }
 
         // ==========================================
@@ -298,6 +309,22 @@ namespace Chinchon.src.forms {
             FinalizarJuego(manoJugador);
         }
 
+        private static void GanarEfecto() {
+            // Reproducir un sonido al interactuar con una carta: https://pixabay.com/sound-effects/winning-218995/
+            string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "ganar.wav");
+
+            SoundPlayer soundPlayer = new(rutaSonido);
+            soundPlayer.Play();
+        }
+
+        private static void PerderEfecto() {
+            // Reproducir un sonido al interactuar con una carta: https://pixabay.com/sound-effects/fail-234710/
+            string rutaSonido = Path.Combine(Application.StartupPath, "assets", "audio", "perder.wav");
+
+            SoundPlayer soundPlayer = new(rutaSonido);
+            soundPlayer.Play();
+        }
+
         private void FinalizarJuego(List<string> mano) {
             if (!PartidaHelpers.PuedeCerrar(mano)) {
                 MessageBox.Show("¡TODAVÍA NO PUEDES CERRAR!",
@@ -319,35 +346,23 @@ namespace Chinchon.src.forms {
 
                 string resultado;
 
-                if (mano == manoJugador) {
-                    // Suponemos que hacer chinchón son 0 puntos
-                    if (puntosJugador == 0 && puntosComputadora == 0)
-                        resultado = "¡EMPATE! Ambos hicieron Chinchón.";
-                    else if (puntosJugador == 0)
-                        resultado = "¡Ganaste con un Chinchón!";
-                    else if (puntosComputadora == 0)
-                        resultado = "¡La computadora hizo Chinchón y gana!";
-                    else if (puntosJugador > puntosComputadora)
-                        resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
-                    else if (puntosJugador < puntosComputadora)
-                        resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
-                    else
-                        resultado = $"Empate a {puntosJugador} puntos.";
-                } else {
-                    // mano == manoComputadora
-                    if (puntosJugador == 0 && puntosComputadora == 0)
-                        resultado = "¡EMPATE! Ambos hicieron Chinchón.";
-                    else if (puntosJugador == 0)
-                        resultado = "¡Ganaste con un Chinchón!";
-                    else if (puntosComputadora == 0)
-                        resultado = "¡La computadora hizo Chinchón y gana!";
-                    else if (puntosJugador > puntosComputadora)
-                        resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
-                    else if (puntosJugador < puntosComputadora)
-                        resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
-                    else
-                        resultado = $"Empate a {puntosJugador} puntos.";
-                }
+                // Suponemos que hacer chinchón son 0 puntos
+                if (puntosJugador == 0 && puntosComputadora == 0)
+                    resultado = "¡EMPATE! Ambos hicieron Chinchón.";
+                else if (puntosJugador == 0) {
+                    resultado = "¡Ganaste con un Chinchón!";
+                    GanarEfecto();
+                } else if (puntosComputadora == 0) {
+                    resultado = "¡La computadora hizo Chinchón y gana!";
+                    PerderEfecto();
+                } else if (puntosJugador > puntosComputadora) {
+                    resultado = $"¡Perdiste! La computadora tiene {puntosComputadora} puntos. Tú: {puntosJugador} puntos.";
+                    PerderEfecto();
+                } else if (puntosJugador < puntosComputadora) {
+                    resultado = $"¡Ganaste! Tienes {puntosJugador} puntos. Computadora: {puntosComputadora} puntos.";
+                    GanarEfecto();
+                } else
+                    resultado = $"Empate a {puntosJugador} puntos.";
 
                 // Mostrar el texto
                 puntuaciones.Text = resultado;
@@ -358,7 +373,7 @@ namespace Chinchon.src.forms {
         // ==========================================
         // CARGAR EL FORMULARIO
         // ==========================================
-        private void Partida_Load(object sender, EventArgs e) {
+        private async void Partida_Load(object sender, EventArgs e) {
             puntuaciones.Hide();
 
             this.CenterToScreen();
@@ -373,6 +388,8 @@ namespace Chinchon.src.forms {
             // Creamos y barajeamos el mazo
             mazo = new Cartas();
             mazo.Barajear();
+
+            await Task.Delay(4000); // Al audio dura 4 segundos
 
             // DEBUG: Repartimos 7 cartas a 2 jugadores
             // Asignamos una mano al jugador
