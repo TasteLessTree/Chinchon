@@ -1,5 +1,6 @@
 ﻿using Chinchon.src.Utils;
 using System.Media;
+using System.Runtime.InteropServices;
 
 namespace Chinchon.src.forms {
     public partial class Partida : Form {
