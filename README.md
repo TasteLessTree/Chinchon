@@ -71,7 +71,7 @@ Una aplicación para Windows hecha con WinForms y C# para jugar al chinchón con
 
 - Mejorar la UI.
 
-- Añadir más sonidos al robar una carta.
+- Añadir más sonidos al interactuar con una carta.
 
 - La posibilidad de volver a jugar una vez se ha terminado la partida.
 
