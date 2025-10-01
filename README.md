@@ -4,6 +4,8 @@ Una aplicación para Windows hecha con WinForms y C# para jugar al chinchón con
 
 *Nota: Esta aplicación es una demo y todavía tiene áreas que mejorar.*
 
+**Necesitas [dotnet](https://dotnet.microsoft.com/en-us/download) para poder usar esta aplicación.**
+
 ## ¿Cómo jugar?
 
 - Haz click en el botón que pone "Jugar".
